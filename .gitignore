@@ -9,3 +9,4 @@ qa/receive*.js
 .env.*
 !.env.example
 tools/*.log
+.vercel

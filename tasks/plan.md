@@ -277,3 +277,25 @@ t=0.5 天空 14 / 雪面 90；t=0.75 天空 55 / 雪面 154，夜晚雪面仍可
 - After T5: 可安装到桌面（接近原生APP体验）
 - After T7: 视觉品质提升（更像商业游戏）
 - Final: 完整商业功能集
+
+---
+
+## 发布（本会话）
+
+方法复用「一人公司/村庄大冒险」已跑通的发布链路（GitHub Actions Pages + Vercel CLI +
+itch.io butler），首次为本项目落地：
+
+| 平台 | 状态 | 地址 |
+|---|---|---|
+| GitHub 仓库 | ✅ 已推送 | https://github.com/z1302065902-cloud/powder-rush |
+| GitHub Pages | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://z1302065902-cloud.github.io/powder-rush/ |
+| Vercel | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://powder-rush-liard.vercel.app/ |
+| itch.io | ⏳ 页面未建（需用户 VPN+登录创建，zip 已备 /tmp/powder-rush-itch.zip 2.88MB） | zsy2026/powder-rush |
+| 爱发电 | ⏳ 需用户提供创作者页 URL | 待定 |
+
+关键配置：
+- `vercel.json`：framework=vite / outputDirectory=dist / SPA rewrite
+- `.github/workflows/deploy.yml`：npm ci → npm run build → upload-pages-artifact（首次用 legacy
+  Pages 触发了错误的源码直发，已取消，改用 Actions 来源）
+- SW `./sw.js` 相对路径 → 子路径（GitHub Pages）下离线可用
+- Pages 上的 CI 构建 bundle 与本地 hash 不同属正常
