@@ -1,0 +1,374 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b1526;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #eaf2ff;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app, #game-canvas-wrap {
+  position: fixed;
+  inset: 0;
+}
+
+canvas { display: block; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(8,18,38,0.35) 0%, rgba(5,12,26,0.72) 100%);
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.panel {
+  text-align: center;
+  padding: 40px 52px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(23,42,74,0.82), rgba(10,20,40,0.9));
+  border: 1px solid rgba(120,180,255,0.22);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+  max-width: 440px;
+  /* The rider picker made the menu taller than short laptop/phone viewports —
+     cap it and scroll instead of overflowing off-screen. */
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120,180,255,0.4) transparent;
+}
+.panel::-webkit-scrollbar { width: 6px; }
+.panel::-webkit-scrollbar-track { background: transparent; }
+.panel::-webkit-scrollbar-thumb { background: rgba(120,180,255,0.35); border-radius: 3px; }
+
+.title {
+  font-size: 46px;
+  letter-spacing: 4px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #7fd4ff, #d7f0ff, #9ad8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(120,200,255,0.35);
+}
+
+.subtitle { margin-top: 6px; color: #9fc6e8; letter-spacing: 2px; font-size: 14px; }
+
+.controls {
+  margin: 26px 0 22px;
+  text-align: left;
+  font-size: 15px;
+  color: #cfe4f8;
+  line-height: 2.1;
+}
+
+.controls .tip { margin-top: 12px; font-size: 13px; color: #a6c6e6; line-height: 1.6; text-align: center; }
+.gate-sym { color: #ffd76a; }
+
+kbd {
+  display: inline-block;
+  min-width: 24px;
+  padding: 2px 7px;
+  text-align: center;
+  border-radius: 5px;
+  background: #1c3355;
+  border: 1px solid #3a5b8c;
+  border-bottom-width: 2px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #dcecff;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  padding: 14px 40px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 40px;
+  color: #05263b;
+  background: linear-gradient(180deg, #8fd6ff, #3fa4f0);
+  box-shadow: 0 8px 24px rgba(64,170,255,0.45), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(64,170,255,0.6); }
+.btn:active { transform: translateY(1px); }
+
+.hint { margin-top: 14px; font-size: 12px; color: #9cb8d8; letter-spacing: 1px; }
+
+.hidden { display: none !important; }
+
+/* HUD */
+.hud { position: fixed; top: 0; left: 0; right: 0; z-index: 5; padding: 18px 26px; pointer-events: none; }
+.hud-top { display: flex; gap: 34px; justify-content: center; }
+.hud-stat { text-align: center; min-width: 110px; background: rgba(10,20,40,0.4); padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(120,180,255,0.15); }
+.hud-label { display: block; font-size: 10px; letter-spacing: 2px; color: #8fb4d8; }
+.hud-value { font-size: 26px; font-weight: 700; color: #eaf6ff; }
+.hud-unit { font-size: 11px; color: #8fb4d8; margin-left: 3px; }
+
+/* Dedicated combo readout — it must never overwrite the GATES counter. */
+.hud-combo {
+  margin: 10px auto 0;
+  width: fit-content;
+  padding: 3px 16px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd76a;
+  background: rgba(60,40,0,0.55);
+  border: 1px solid rgba(255,215,100,0.45);
+  text-shadow: 0 0 12px rgba(255,200,60,0.7);
+  animation: comboPop 0.35s ease-out;
+}
+@keyframes comboPop { from { transform: scale(0.82); opacity: 0.4; } to { transform: scale(1); opacity: 1; } }
+
+.hud-msg {
+  position: fixed;
+  top: 20%;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #ffd76a;
+  text-shadow: 0 0 18px rgba(255,200,60,0.6);
+  letter-spacing: 3px;
+}
+
+/* Game over */
+.go-title { font-size: 54px; letter-spacing: 6px; color: #ff8a8a; text-shadow: 0 0 30px rgba(255,80,80,0.4); }
+.go-sub { margin-top: 4px; color: #c98f9f; font-size: 15px; }
+.new-best { margin: 6px 0 10px; font-size: 18px; font-weight: 700; color: #ffd700; letter-spacing: 3px; text-shadow: 0 0 12px rgba(255,215,0,0.7); animation: pulse 0.8s ease-in-out infinite alternate; }
+@keyframes pulse { from { opacity: 0.7; transform: scale(0.97); } to { opacity: 1; transform: scale(1.03); } }
+.go-stats { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+.go-stat { text-align: center; }
+.go-label { display: block; font-size: 10px; letter-spacing: 2px; color: #8fb4d8; }
+.go-value { font-size: 28px; font-weight: 700; color: #eaf6ff; }
+.go-row { display: flex; flex-direction: column; gap: 4px; }
+.go-best { font-size: 18px; color: #ffd700; font-weight: 600; }
+.go-stats + .btn { margin-top: 6px; }
+
+/* FPS */
+.fps {
+  position: fixed;
+  bottom: 10px;
+  right: 12px;
+  z-index: 20;
+  font-size: 12px;
+  color: #7fd4ff;
+  background: rgba(0,0,0,0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Mobile touch feedback zones */
+@media (hover: none) and (pointer: coarse) {
+  .touch-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-around;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0.45;
+    font-size: 12px;
+    color: #a0c4e8;
+    letter-spacing: 1px;
+  }
+  .touch-hint span { padding: 6px 14px; background: rgba(10,20,40,0.5); border-radius: 8px; border: 1px solid rgba(120,180,255,0.15); }
+}
+
+/* Mobile menu adjustments */
+@media (max-width: 480px) {
+  .panel { padding: 28px 22px; margin: 16px; }
+  .title { font-size: 32px; }
+  .controls { font-size: 13px; line-height: 1.9; }
+  .go-stats { gap: 12px; }
+  .go-value { font-size: 22px; }
+  .go-best { font-size: 15px; }
+}
+
+/* Share button */
+.go-share { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; }.btn-share { cursor: pointer; border: none; padding: 8px 20px; font-size: 13px; font-weight: 700; letter-spacing: 1px; border-radius: 20px; color: #05263b; background: linear-gradient(180deg, #a0e8ff, #4aa8f0); box-shadow: 0 4px 12px rgba(64,170,255,0.35); }
+.btn-share:hover { transform: translateY(-1px); }
+.share-status { font-size: 12px; color: #7fd4ff; letter-spacing: 1px; }
+
+/* ---------------------------------------------------------- rider skins */
+.skin-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 9px;
+  padding: 0 2px;
+}
+.skin-title { font-size: 11px; letter-spacing: 3px; font-weight: 700; color: #a8c8e8; }
+.skin-count {
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #d6f0ff;
+  background: rgba(80,165,240,0.34);
+  border: 1px solid rgba(150,205,255,0.55);
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.skin-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 10px;
+  column-gap: 8px;
+}
+
+.skin-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 4px 7px;
+  border-radius: 11px;
+  cursor: pointer;
+  font: inherit;
+  color: #dbe9fa;
+  background: rgba(12,24,46,0.66);
+  border: 1px solid rgba(120,180,255,0.16);
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.skin-chip:hover { transform: translateY(-2px); border-color: rgba(160,215,255,0.45); }
+.skin-chip:focus-visible { outline: 2px solid #7fd4ff; outline-offset: 2px; }
+
+.skin-chip.selected {
+  background: rgba(30,74,128,0.75);
+  border-color: rgba(150,225,255,0.85);
+  box-shadow: 0 0 0 1px rgba(150,225,255,0.35), 0 6px 18px rgba(60,160,255,0.28);
+}
+.skin-chip.locked {
+  cursor: not-allowed;
+  background: rgba(8,15,30,0.5);
+  border-color: rgba(110,140,180,0.2);
+}
+/* Corner lock badge — reads at a glance and keeps the status line free for numbers. */
+.skin-chip.locked::after {
+  content: '\1F512';
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(0,0,0,0.6));
+}
+.skin-chip.locked .skin-swatch { opacity: 0.32; filter: grayscale(0.85); }
+.skin-chip.locked .skin-name { color: #9fb2cc; }
+
+.skin-swatch { display: flex; gap: 3px; }
+.skin-swatch i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+}
+
+.skin-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+.skin-status {
+  font-size: 10px;
+  line-height: 1.25;
+  color: #9dbde0;
+  letter-spacing: 0.3px;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 0 2px;
+}
+.skin-chip.selected .skin-status { color: #b6ffdb; }
+.skin-chip.locked .skin-status { color: #ffe08a; font-weight: 700; }
+
+.skin-bar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(120,180,255,0.16);
+}
+.skin-bar > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #4aa8f0, #7fd4ff);
+  transition: width 0.4s ease;
+}
+/* The bar only encodes "progress toward unlock", so hide it once unlocked —
+   otherwise a full-width bright bar competes with the selection highlight. */
+.skin-chip:not(.locked) .skin-bar { opacity: 0; }
+.skin-chip.locked .skin-bar > i { background: linear-gradient(90deg, #b8860b, #ffd05e); }
+
+.skin-msg {
+  margin: 9px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #9fe8c8;
+  min-height: 16px;
+}
+.skin-msg.hidden { visibility: hidden; }
+
+/* New-rider notice on the game-over panel */
+.go-unlock {
+  margin: 4px 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #a0ffd0;
+  text-shadow: 0 0 14px rgba(80,255,180,0.5);
+}
+.go-unlock.hidden { display: none; }
+
+@media (max-width: 480px) {
+  .skin-picker { grid-template-columns: repeat(2, 1fr); }
+  .skin-status { min-height: 20px; font-size: 9px; }
+}
+
+/* Short viewports (laptops ~720px, phones in landscape) — tighten the menu so the
+   whole panel + START button stay on screen without scrolling where possible. */
+@media (max-height: 800px) {
+  .panel { padding: 26px 40px; }
+  .title { font-size: 36px; letter-spacing: 3px; }
+  .subtitle { font-size: 13px; }
+  .controls { margin: 15px 0 14px; font-size: 13.5px; line-height: 1.85; }
+  .controls .tip { margin-top: 9px; font-size: 12px; }
+  .skin-head { margin: 14px 0 7px; }
+  .skin-chip { padding: 7px 4px 6px; gap: 4px; }
+  .skin-name { font-size: 11.5px; }
+  .skin-status { min-height: 19px; font-size: 9px; }
+  .btn { padding: 12px 34px; font-size: 17px; }
+  .hint { margin-top: 10px; }
+}
+
+@media (max-height: 660px) {
+  .panel { padding: 20px 30px; }
+  .title { font-size: 28px; }
+  .subtitle { font-size: 12px; }
+  .controls { margin: 11px 0 10px; font-size: 12.5px; line-height: 1.7; }
+  .controls .tip { margin-top: 7px; font-size: 11px; }
+  .skin-head { margin: 11px 0 6px; }
+  .skin-picker { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .skin-swatch i { width: 9px; height: 9px; }
+  .skin-chip { padding: 6px 3px 5px; gap: 3px; }
+  .skin-status { min-height: 17px; font-size: 8.5px; }
+  .btn { padding: 10px 28px; font-size: 15px; }
+  .hint { margin-top: 8px; font-size: 11px; }
+}

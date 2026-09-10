@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+qa/devshots/
+qa/receive*.cjs
+qa/receive*.js
+.env
+.env.*
+!.env.example
+tools/*.log

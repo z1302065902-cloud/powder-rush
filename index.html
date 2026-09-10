@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#1a3a6e" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <title>Powder Rush — 3D Skiing</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="game-canvas-wrap"></div>
+
+      <!-- START SCREEN -->
+      <div id="ui-start" class="overlay">
+        <div class="panel">
+          <h1 class="title">POWDER RUSH</h1>
+          <p class="subtitle">Endless downhill skiing</p>
+          <div class="controls">
+            <div><kbd>W</kbd> / <kbd>↑</kbd> Accelerate</div>
+            <div><kbd>S</kbd> / <kbd>↓</kbd> Brake</div>
+            <div><kbd>A</kbd> / <kbd>D</kbd> Steer left / right</div>
+            <div><kbd>Space</kbd> Jump</div>
+            <div class="tip">Pass through gates <span class="gate-sym">◯</span> for points.<br/>Don't hit trees or rocks!</div>
+          </div>
+
+          <div class="skin-head">
+            <span class="skin-title">RIDER</span>
+            <span id="skin-count" class="skin-count">1/6</span>
+          </div>
+          <div id="skin-picker" class="skin-picker" role="group" aria-label="Rider skin"></div>
+          <p id="skin-msg" class="skin-msg hidden"></p>
+
+          <button id="btn-start" class="btn">▶ START SKIING</button>
+          <p class="hint">or press Enter · <kbd>1</kbd>–<kbd>6</kbd> switch rider</p>
+        </div>
+      </div>
+
+      <!-- HUD -->
+      <div id="ui-hud" class="hud hidden">
+        <div class="hud-top">
+          <div class="hud-stat"><span class="hud-label">SPEED</span><span id="hud-speed" class="hud-value">0</span><span class="hud-unit">km/h</span></div>
+          <div class="hud-stat"><span class="hud-label">DIST</span><span id="hud-dist" class="hud-value">0</span><span class="hud-unit">m</span></div>
+          <div class="hud-stat"><span class="hud-label">GATES</span><span id="hud-gates" class="hud-value">0</span></div>
+        </div>
+        <div id="hud-combo" class="hud-combo hidden"></div>
+        <div id="hud-msg" class="hud-msg hidden"></div>
+      </div>
+
+      <!-- GAME OVER -->
+      <div id="ui-gameover" class="overlay hidden">
+        <div class="panel">
+          <h2 class="go-title">CRASH!</h2>
+          <p class="go-sub">You ate the snow.</p>
+          <div id="new-best" class="new-best hidden">🏆 NEW BEST!</div>
+          <p id="go-unlock" class="go-unlock hidden"></p>
+          <div class="go-stats">
+            <div class="go-stat"><span class="go-label">THIS RUN</span></div>
+            <div class="go-stat"><span class="go-label">BEST</span></div>
+            <div class="go-stat go-row"><span id="go-dist" class="go-value">0m</span><span id="go-best-dist" class="go-value go-best">0m</span></div>
+            <div class="go-stat go-row"><span id="go-gates" class="go-value">0</span><span id="go-best-gates" class="go-value go-best">0</span></div>
+            <div class="go-stat go-row"><span id="go-speed" class="go-value">0km/h</span><span id="go-best-speed" class="go-value go-best">0km/h</span></div>
+            <div class="go-stat go-row"><span id="go-trick" class="go-value">—</span><span class="go-label">TRICK</span></div>
+          </div>
+          <button id="btn-restart" class="btn">⟳ SKI AGAIN</button>
+          <div class="go-share">
+            <button id="btn-screenshot" class="btn-share">📷 SHARE</button>
+            <span id="share-status" class="share-status"></span>
+          </div>
+          <p class="hint">or press R</p>
+        </div>
+      </div>
+
+      <div id="ui-fps" class="fps hidden">-- fps</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
