@@ -291,7 +291,7 @@ itch.io butler），首次为本项目落地：
 | GitHub Pages | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://z1302065902-cloud.github.io/powder-rush/ |
 | Vercel | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://powder-rush-liard.vercel.app/ |
 | itch.io | ✅ 已上线（Firefox cookie 注入 + WebKit，新建 Free+HTML 页，传 zip+封面，实测游戏在 itch 托管下启动到菜单） | https://zsy2026.itch.io/powder-rush |
-| 爱发电 | ⏳ 需用户提供创作者页 URL | 待定 |
+| 爱发电 | ✅ 已接入：菜单加「☕ 赞助支持」按钮（新标签页打开），三平台已重部署 | https://afdian.com/a/zsy2026 |
 
 关键配置：
 - `vercel.json`：framework=vite / outputDirectory=dist / SPA rewrite
