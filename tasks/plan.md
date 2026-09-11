@@ -290,7 +290,7 @@ itch.io butler），首次为本项目落地：
 | GitHub 仓库 | ✅ 已推送 | https://github.com/z1302065902-cloud/powder-rush |
 | GitHub Pages | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://z1302065902-cloud.github.io/powder-rush/ |
 | Vercel | ✅ 线上 200，启动实测 menu/60fps/0 错误 | https://powder-rush-liard.vercel.app/ |
-| itch.io | ⏳ 页面未建（需用户 VPN+登录创建，zip 已备 /tmp/powder-rush-itch.zip 2.88MB） | zsy2026/powder-rush |
+| itch.io | ✅ 已上线（Firefox cookie 注入 + WebKit，新建 Free+HTML 页，传 zip+封面，实测游戏在 itch 托管下启动到菜单） | https://zsy2026.itch.io/powder-rush |
 | 爱发电 | ⏳ 需用户提供创作者页 URL | 待定 |
 
 关键配置：
