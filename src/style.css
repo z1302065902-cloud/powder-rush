@@ -105,6 +105,23 @@ kbd {
 
 .hint { margin-top: 14px; font-size: 12px; color: #9cb8d8; letter-spacing: 1px; }
 
+.btn-support {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 22px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: 24px;
+  color: #ffd9a0;
+  background: rgba(255, 190, 90, 0.08);
+  border: 1px solid rgba(255, 190, 90, 0.35);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+}
+.btn-support:hover { background: rgba(255, 190, 90, 0.18); border-color: rgba(255, 190, 90, 0.6); transform: translateY(-1px); }
+.btn-support:active { transform: translateY(1px); }
+
 .hidden { display: none !important; }
 
 /* HUD */
